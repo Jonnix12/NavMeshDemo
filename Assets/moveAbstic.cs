@@ -1,30 +1,37 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class moveAbstic : MonoBehaviour
 {
+    [SerializeField] private float _moveTo = 5;
+    [SerializeField] private float _speed = 5;
+    
+    Vector3 _moveDir;
     
     private void Start()
     {
-        StartCoroutine(Move());
-    }
-
-    void Update()
-    {
-       
+        _moveDir = transform.right;
         
+        StartCoroutine(Move());
     }
 
     private IEnumerator Move()
     {
-        while (Vector3.Distance(transform.position,transform.position + new Vector3(5,0,0)) > 0.2f)
+        while (true)
         {
-        transform.Translate(transform.right);
-        yield return new WaitForEndOfFrame();
+            _moveTo = _moveTo * -1;
+
+            _moveDir = _moveDir * -1;
+        
+            Vector3 target = transform.position + new Vector3(_moveTo, 0, 0);
+            
+            while (Vector3.Distance(transform.position, target) > 0.2f)
+            {
+                transform.Translate(_moveDir * Time.deltaTime * _speed);
+                yield return new WaitForEndOfFrame();
+            }
+
+            yield return new WaitForSeconds(1);
         }
-        yield return new WaitForSeconds(2);
     }
-    
 }
